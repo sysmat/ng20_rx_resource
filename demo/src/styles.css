@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+/* Optional: Basic styling for demonstration */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0; /* Remove default body margin */
+  padding: 0; /* Remove default body padding */
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+p {
+  line-height: 1.7; /* Improved line height for readability */
+  color: #333;
+}
