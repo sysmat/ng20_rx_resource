@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AppService, Profile, User } from './app.service';
 import UserComponent from './user.component';
 
@@ -78,26 +78,32 @@ describe('Testing UserComponent', () => {
     expect(component.profileR.value()?.id).toEqual(testProfile.id);
   });
 
-  //   it('should show error on failed user fetch', async () => {
-  //     spyOn(appService, 'getUser').and.returnValue(throwError(() => 'error'));
-  //     fixture.componentRef.setInput('id', 1);
+  it('should show error on failed user fetch', async () => {
+    spyOn(appService, 'getUser').and.returnValue(throwError(() => 'error'));
+    fixture.componentRef.setInput('id', 1);
 
-  //     await fixture.whenStable();
-  //     fixture.detectChanges();
-  //     expect(appService.getUser).toHaveBeenCalled();
-  //   });
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(appService.getUser).toHaveBeenCalled();
+  });
 
-  //   it('should show error on failed profile fetch ', async () => {
-  //     spyOn(appService, 'getProfile').and.returnValue(throwError(() => 'error'));
-  //     spyOn(appService, 'getUser').and.returnValue(of(testUser));
+  it('should show error on failed profile fetch ', async () => {
+    spyOn(appService, 'getProfile').and.returnValue(throwError(() => 'error'));
+    spyOn(appService, 'getUser').and.returnValue(of(testUser));
 
-  //     fixture.componentRef.setInput('id', 1);
-  //     await fixture.whenStable();
-  //     fixture.detectChanges();
+    fixture.componentRef.setInput('id', 1);
 
-  //     expect(appService.getUser).toHaveBeenCalled();
-  //     expect(component.userR.value()?.id).toEqual(testUser.id);
-  //     expect(appService.getProfile).toHaveBeenCalled();
-  //     expect(component.profileR.value()?.id).toEqual(testProfile.id);
-  //   });
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(appService.getUser).toHaveBeenCalled();
+    await fixture.whenStable();
+    expect(component.userR.value()?.id).toEqual(testUser.id);
+
+    TestBed.tick();
+    await fixture.whenStable();
+    expect(appService.getProfile).toHaveBeenCalled();
+    await fixture.whenStable();
+    expect(component.profileR.status()).toEqual('error');
+  });
 });
