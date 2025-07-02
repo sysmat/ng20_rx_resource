@@ -1,10 +1,10 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
-import UserComponent from './user.component';
 import { AppService, Profile, User } from './app.service';
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import UserComponent from './user.component';
 
 describe('Testing UserComponent', () => {
   let component: UserComponent;
@@ -60,9 +60,8 @@ describe('Testing UserComponent', () => {
   it('should fetch profile', async () => {
     spyOn(appService, 'getProfile').and.returnValue(of(testProfile));
     spyOn(appService, 'getUser').and.returnValue(of(testUser));
-    fixture.componentRef.setInput('id', 1);
 
-    // fixture.detectChanges();
+    fixture.componentRef.setInput('id', 1);
 
     await fixture.whenStable();
     fixture.detectChanges();
@@ -70,6 +69,8 @@ describe('Testing UserComponent', () => {
     expect(appService.getUser).toHaveBeenCalled();
     await fixture.whenStable();
     expect(component.userR.value()?.id).toEqual(testUser.id);
+
+    TestBed.tick();
 
     await fixture.whenStable();
     expect(appService.getProfile).toHaveBeenCalled();
