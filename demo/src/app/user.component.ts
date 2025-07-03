@@ -1,8 +1,15 @@
-import { Component, inject, input, numberAttribute } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  numberAttribute,
+} from '@angular/core';
 import { AppService } from './app.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, of } from 'rxjs';
 import UserDetailsComponent from './user.details.component';
+import { injectDocumentVisibility } from 'ngxtension/inject-document-visibility';
 
 @Component({
   selector: 'app-user',
@@ -19,11 +26,15 @@ import UserDetailsComponent from './user.details.component';
 })
 export default class UserComponent {
   readonly userId = input.required({ alias: 'id', transform: numberAttribute });
+
   readonly #appService = inject(AppService);
+  readonly #visibilityState = injectDocumentVisibility();
+  isVisible = computed(() => this.#visibilityState() === 'visible');
 
   readonly userR = rxResource({
     params: () => ({
       userId: this.userId(),
+      visible: this.isVisible(),
     }),
     stream: ({ params }) => {
       if (!params.userId) {
