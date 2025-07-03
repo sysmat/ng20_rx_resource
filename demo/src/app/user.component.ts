@@ -2,18 +2,19 @@ import { Component, inject, input, numberAttribute } from '@angular/core';
 import { AppService } from './app.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, of } from 'rxjs';
+import UserDetailsComponent from './user.details.component';
 
 @Component({
   selector: 'app-user',
+  imports: [UserDetailsComponent],
   template: `
-  <h2>user {{userId()}}</h2>  
-  @if(userR.value()) {
-    username = {{userR.value()?.username}}
-  }
-  <br>
-  @if(profileR.value()) {
-    role = {{profileR.value()?.role}}
-  }
+    <h2>user {{ userId() }}</h2>
+    @if(userR.value()) { username = {{ userR.value()?.username }}
+    <app-user-details [user]="userR.value()"></app-user-details>
+    }
+    <br />
+    @if(profileR.value()) { role = {{ profileR.value()?.role }}
+    }
   `,
 })
 export default class UserComponent {
