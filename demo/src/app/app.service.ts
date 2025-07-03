@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
-import { delay, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { delay } from 'rxjs';
 
 export type User = {
   id: number;
@@ -16,13 +17,13 @@ export type Profile = {
   providedIn: 'root',
 })
 export class AppService {
+  readonly #http = inject(HttpClient);
+
   getUser(userId: number) {
-    return of<User>({ id: userId, username: 'test', profileId: 12 }).pipe(
-      delay(1000)
-    );
+    return this.#http.get<User>('/assets/user.json').pipe(delay(1000));
   }
 
   getProfile(profileId: number) {
-    return of<Profile>({ id: profileId, role: 'admin' }).pipe(delay(1000));
+    return this.#http.get<Profile>('/assets/profile.json').pipe(delay(1000));
   }
 }
