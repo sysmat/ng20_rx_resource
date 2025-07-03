@@ -29,15 +29,15 @@ export default class UserComponent {
 
   readonly #appService = inject(AppService);
   readonly #visibilityState = injectDocumentVisibility();
-  isVisible = computed(() => this.#visibilityState() === 'visible');
+  readonly #isVisible = computed(() => this.#visibilityState() === 'visible');
 
   readonly userR = rxResource({
     params: () => ({
       userId: this.userId(),
-      visible: this.isVisible(),
+      visible: this.#isVisible(),
     }),
     stream: ({ params }) => {
-      if (!params.userId) {
+      if (!params.userId && !params.visible) {
         return of(null);
       }
       return this.#fetchUser(params.userId);
@@ -47,12 +47,16 @@ export default class UserComponent {
   readonly profileR = rxResource({
     params: () => ({
       user: this.userR.value(),
+      visible: this.#isVisible(),
     }),
     stream: ({ params }) => {
-      if (!params.user) {
+      if (!params.user && !params.visible) {
         return of(null);
       }
-      return this.#fetchProfile(params.user.profileId);
+      if (params.user) {
+        return this.#fetchProfile(params.user.profileId);
+      }
+      return of(null);
     },
   });
 
