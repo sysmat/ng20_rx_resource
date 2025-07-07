@@ -32,17 +32,21 @@ describe('Testing UserComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(UserComponent);
-    component = fixture.componentInstance;
-    appService = fixture.debugElement.injector.get(AppService);
+    appService = TestBed.inject(AppService);
+
+    // appService = fixture.debugElement.injector.get(AppService);
   });
 
   it('should create component and show erro message when id is null', () => {
+    fixture = TestBed.createComponent(UserComponent);
     fixture.componentRef.setInput('id', null);
     fixture.detectChanges();
   });
 
   it('should fetch user', async () => {
+    fixture = TestBed.createComponent(UserComponent);
+    component = fixture.componentInstance;
+
     spyOn(appService, 'getUser').and.returnValue(of(testUser));
 
     fixture.componentRef.setInput('id', 1);
@@ -58,6 +62,9 @@ describe('Testing UserComponent', () => {
   });
 
   it('should fetch profile', async () => {
+    fixture = TestBed.createComponent(UserComponent);
+    component = fixture.componentInstance;
+
     spyOn(appService, 'getProfile').and.returnValue(of(testProfile));
     spyOn(appService, 'getUser').and.returnValue(of(testUser));
 
@@ -79,6 +86,9 @@ describe('Testing UserComponent', () => {
   });
 
   it('should show error on failed user fetch', async () => {
+    fixture = TestBed.createComponent(UserComponent);
+    component = fixture.componentInstance;
+
     spyOn(appService, 'getUser').and.returnValue(throwError(() => 'error'));
     fixture.componentRef.setInput('id', 1);
 
@@ -88,6 +98,9 @@ describe('Testing UserComponent', () => {
   });
 
   it('should show error on failed profile fetch ', async () => {
+    fixture = TestBed.createComponent(UserComponent);
+    component = fixture.componentInstance;
+
     spyOn(appService, 'getProfile').and.returnValue(throwError(() => 'error'));
     spyOn(appService, 'getUser').and.returnValue(of(testUser));
 
